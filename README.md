@@ -19,7 +19,7 @@ I started by defining the data model and importing the JSON data. Then I built t
 
 ## View it live
 
-Every project should be deployed somewhere. Be sure to include the link to the deployed project so that the viewer can click around and see what it's all about.
+[https://technigo-project-first-api-vfue.onrender.com/](https://technigo-project-first-api-vfue.onrender.com/)
 
 ## Getting Started with the Project
 
