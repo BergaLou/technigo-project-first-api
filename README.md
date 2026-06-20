@@ -1,15 +1,25 @@
-# First API
+# Avocados API
 
-Replace this readme with your own information about the project. You can include things like:
+A RESTful API developed to manage and visualize avocado sales data. The project is my first API and the purpose was to learn the basics of backend development and database management.
 
-- Brief description of the assignment
-- How you approached the task, what tools and techniques you used, and how you planned it
-- If you had more time, what would be next?
-- How to run the project locally
+**Technology & Tools**
+
+- Backend: Node.js and Express.
+- Database: MongoDB with Mongoose.
+- Testing: Thunder Client (after switching from Postman).
+
+**Development Process**
+I started by defining the data model and importing the JSON data. Then I built the route to retrieve the data and gradually added advanced features such as filtering, pagination and aggregated statistics.
+
+# Future improvements
+
+- Implement authentication (JWT).
+- Add CRUD functionality (POST, PUT, DELETE).
+- Build a frontend that visualizes the statistics in charts.
 
 ## View it live
-Every project should be deployed somewhere. Be sure to include the link to the deployed project so that the viewer can click around and see what it's all about.
 
+Every project should be deployed somewhere. Be sure to include the link to the deployed project so that the viewer can click around and see what it's all about.
 
 ## Getting Started with the Project
 

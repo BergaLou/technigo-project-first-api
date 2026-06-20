@@ -1,14 +1,21 @@
 import cors from "cors"
 import express from "express"
-import mongoose from "mongoose"
+import mongoose, { Schema } from "mongoose"
+import avocadoSalesData from "./data/avocado-sales.json" with { type: "json" };
 
-// If you're using one of our datasets, uncomment the appropriate import below
-// to get started!
-// import avocadoSalesData from "./data/avocado-sales.json"
-// import booksData from "./data/books.json"
-// import goldenGlobesData from "./data/golden-globes.json"
-// import netflixData from "./data/netflix-titles.json"
-// import topMusicData from "./data/top-music.json"
+const avocadoSchema = new Schema({
+  id: Number,
+  date: String,
+  averagePrice: Number,
+  totalVolume: Number,
+  totalBagsSold: Number,
+  smallBagsSold: Number,
+  largeBagsSold: Number,
+  xLargeBagsSold: Number,
+  region: String
+});
+
+const Avocado = mongoose.model('Avocado', avocadoSchema);
 
 const mongoUrl = process.env.MONGO_URL || "mongodb://localhost/project-first-api"
 mongoose.connect(mongoUrl)
@@ -26,8 +33,67 @@ app.use(express.json())
 
 // Start defining your routes here
 app.get("/", (req, res) => {
-  res.send("Hello Technigo!")
+  res.json({
+    message: "Welcome to my Avocados-API",
+    endpoints: {
+      allAvocados: "GET /avocados",
+      singleAvocado: "GET /avocados/:id",
+      stats: "GET /avocados/stats"
+    }
+  })
+});  
+
+app.get("/avocados", async (req, res) => {
+  const { region, page = 1, limit = 20 } = req.query;
+  const query = {};
+
+  if (region) {
+    query.region = region;
+  }
+
+  const skip = (page - 1) * limit;
+
+  try {
+  const avocados = await Avocado.find(query)
+  .limit(Number(limit))
+  .skip(Number(skip));
+  res.json(avocados)
+  } catch (err) {
+    res.status(500).json({error: "Cant pick up the avocados.." });
+  }
+});
+
+app.get("/avocados/stats", async (req, res) => {
+  try {
+    const stats = await Avocado.aggregate([
+      {
+        $group: {
+          _id: "$region",
+          averagePrice: { $avg: "$averagePrice" },
+          totalCount: { $sum: 1 }
+        }
+      }
+    ]);
+    res.json(stats);
+  } catch (err) {
+    res.status(500).json({ error: "Cant find the statistics"});
+  }
+});
+
+app.get("/avocados/:id", async (req, res) => {
+  const avocado = await Avocado.findOne({ id: req.params.id })
+  res.json(avocado)
 })
+
+if (process.env.RESET_DB) {
+  const seedDatabase = async () => {
+    await Avocado.deleteMany({});
+    await Avocado.insertMany(avocadoSalesData);
+    console.log("Database is up.");
+  };
+
+  seedDatabase();
+}
 
 // Start the server
 app.listen(port, () => {
